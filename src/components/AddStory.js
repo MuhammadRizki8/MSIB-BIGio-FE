@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Form, Button, Modal, Table, Badge } from 'react-bootstrap';
+import { Form, Button, Modal, Table, Badge, Card, Row, Col } from 'react-bootstrap';
 import { format } from 'date-fns';
 import Quill from 'react-quill'; // For rich text editor (chapter content)
 import 'react-quill/dist/quill.snow.css';
@@ -15,7 +15,7 @@ const AddStory = () => {
   const [tags, setTags] = useState([]);
   const [chapters, setChapters] = useState([]);
   const [showCancelModal, setShowCancelModal] = useState(false);
-  const [showChapterForm, setShowChapterForm] = useState(false); // State for showing chapter form
+  const [showChapterForm, setShowChapterForm] = useState(false);
   const [newChapterTitle, setNewChapterTitle] = useState('');
   const [newChapterContent, setNewChapterContent] = useState('');
   const navigate = useNavigate();
@@ -113,134 +113,163 @@ const AddStory = () => {
 
   return (
     <div className="container mt-5">
-      <h1 className="text-center mb-4">Add New Story</h1>
+      <Card className="shadow-sm">
+        <Card.Body>
+          <h1 className="text-center mb-4">Add New Story</h1>
 
-      <Form onSubmit={handleSubmit}>
-        {/* General Story Fields */}
-        <Form.Group>
-          <Form.Label>Title</Form.Label>
-          <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter story title" required />
-        </Form.Group>
+          <Form onSubmit={handleSubmit}>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Title</Form.Label>
+                  <Form.Control type="text" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Enter story title" required />
+                </Form.Group>
+              </Col>
 
-        <Form.Group>
-          <Form.Label>Author</Form.Label>
-          <Form.Control type="text" value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Enter author name" required />
-        </Form.Group>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Author</Form.Label>
+                  <Form.Control type="text" value={author} onChange={(e) => setAuthor(e.target.value)} placeholder="Enter author name" required />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <Form.Group>
-          <Form.Label>Synopsis</Form.Label>
-          <Form.Control as="textarea" value={synopsis} onChange={(e) => setSynopsis(e.target.value)} placeholder="Enter synopsis" required />
-        </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Category</Form.Label>
+                  <Form.Control as="select" value={category} onChange={(e) => setCategory(e.target.value)} required>
+                    <option value="">Select Category</option>
+                    <option value="Technology">Technology</option>
+                    <option value="Health">Health</option>
+                    <option value="Sport">Sport</option>
+                    <option value="Financial">Financial</option>
+                    <option value="Fantasy">Fantasy</option>
+                    <option value="Culture">Culture</option>
+                  </Form.Control>
+                </Form.Group>
+              </Col>
 
-        <Form.Group>
-          <Form.Label>Category</Form.Label>
-          <Form.Control as="select" value={category} onChange={(e) => setCategory(e.target.value)} required>
-            <option value="">Select Category</option>
-            <option value="Technology">Technology</option>
-            <option value="Health">Health</option>
-            <option value="Sport">Sport</option>
-          </Form.Control>
-        </Form.Group>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Status</Form.Label>
+                  <Form.Control as="select" value={status} onChange={(e) => setStatus(e.target.value)} required>
+                    <option value="Publish">Publish</option>
+                    <option value="Draft">Draft</option>
+                  </Form.Control>
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <Form.Group>
-          <Form.Label>Status</Form.Label>
-          <Form.Control as="select" value={status} onChange={(e) => setStatus(e.target.value)} required>
-            <option value="Publish">Publish</option>
-            <option value="Draft">Draft</option>
-          </Form.Control>
-        </Form.Group>
+            <Row>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Story Cover</Form.Label>
+                  <Form.Control type="file" onChange={handleFileChange} required />
+                </Form.Group>
+              </Col>
 
-        <Form.Group>
-          <Form.Label>Story Cover</Form.Label>
-          <Form.Control type="file" onChange={handleFileChange} required />
-        </Form.Group>
+              <Col md={6}>
+                <Form.Group>
+                  <Form.Label>Tags/Keywords</Form.Label>
+                  <Form.Control type="text" placeholder="Add a tag and press Enter" onKeyDown={handleAddTag} />
+                  <div className="mt-2">
+                    {tags.map((tag, index) => (
+                      <Badge key={index} pill bg="secondary" className="mr-2" onClick={() => handleRemoveTag(index)}>
+                        {tag} x
+                      </Badge>
+                    ))}
+                  </div>
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <Form.Group>
-          <Form.Label>Tags/Keywords</Form.Label>
-          <Form.Control type="text" placeholder="Add a tag and press Enter" onKeyDown={handleAddTag} />
-          <div className="mt-2">
-            {tags.map((tag, index) => (
-              <Badge key={index} pill bg="secondary" className="mr-2" onClick={() => handleRemoveTag(index)}>
-                {tag} x
-              </Badge>
-            ))}
-          </div>
-        </Form.Group>
+            <Row>
+              <Col>
+                <Form.Group>
+                  <Form.Label>Synopsis</Form.Label>
+                  <Form.Control as="textarea" value={synopsis} onChange={(e) => setSynopsis(e.target.value)} placeholder="Enter synopsis" required />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        {/* Chapter Section */}
-        <h3 className="mt-5">Chapters</h3>
+            {/* Chapter Section */}
+            <h3 className="mt-5">Chapters</h3>
 
-        <Table striped bordered hover className="mt-3">
-          <thead>
-            <tr>
-              <th>Chapter Title</th>
-              <th>Last Updated</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {chapters.map((chapter, index) => (
-              <tr key={index}>
-                <td>{chapter.title}</td>
-                <td>{format(new Date(chapter.updatedAt), 'dd MMMM yyyy')}</td>
-                <td>
-                  <Button variant="warning" className="mr-2">
-                    Edit
-                  </Button>
-                  <Button variant="danger" onClick={() => setChapters(chapters.filter((_, i) => i !== index))}>
-                    Delete
-                  </Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </Table>
+            <Table striped bordered hover className="mt-3">
+              <thead>
+                <tr>
+                  <th>Chapter Title</th>
+                  <th>Last Updated</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {chapters.map((chapter, index) => (
+                  <tr key={index}>
+                    <td>{chapter.title}</td>
+                    <td>{format(new Date(chapter.updatedAt), 'dd MMMM yyyy')}</td>
+                    <td>
+                      <Button variant="warning" className="mr-2">
+                        Edit
+                      </Button>
+                      <Button variant="danger" onClick={() => setChapters(chapters.filter((_, i) => i !== index))}>
+                        Delete
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
 
-        {/* Add New Chapter Form */}
-        {showChapterForm && (
-          <div className="mt-4">
-            <Form.Group>
-              <Form.Label>Chapter Title</Form.Label>
-              <Form.Control type="text" value={newChapterTitle} onChange={(e) => setNewChapterTitle(e.target.value)} placeholder="Enter chapter title" required />
-            </Form.Group>
+            {/* Add New Chapter Form */}
+            {showChapterForm && (
+              <div className="mt-4">
+                <Form.Group>
+                  <Form.Label>Chapter Title</Form.Label>
+                  <Form.Control type="text" value={newChapterTitle} onChange={(e) => setNewChapterTitle(e.target.value)} placeholder="Enter chapter title" required />
+                </Form.Group>
 
-            <Form.Group>
-              <Form.Label>Chapter Content</Form.Label>
-              <Quill theme="snow" value={newChapterContent} onChange={setNewChapterContent} placeholder="Enter chapter content" />
-            </Form.Group>
+                <Form.Group>
+                  <Form.Label>Chapter Content</Form.Label>
+                  <Quill theme="snow" value={newChapterContent} onChange={setNewChapterContent} placeholder="Enter chapter content" />
+                </Form.Group>
 
-            <Button variant="success" className="mt-3" onClick={handleAddChapter}>
-              Save Chapter
-            </Button>
-          </div>
-        )}
+                <Button variant="success" className="mt-3" onClick={handleAddChapter}>
+                  Save Chapter
+                </Button>
+              </div>
+            )}
 
-        {/* Add New Chapter Button */}
-        {!showChapterForm && (
-          <Button variant="primary" className="mt-3" onClick={() => setShowChapterForm(true)}>
-            Add New Chapter
-          </Button>
-        )}
+            {/* Add New Chapter Button */}
+            {!showChapterForm && (
+              <Button variant="primary" className="mt-3" onClick={() => setShowChapterForm(true)}>
+                Add New Chapter
+              </Button>
+            )}
 
-        <div className="mt-4">
-          <Button variant="secondary" onClick={() => setShowCancelModal(true)}>
-            Cancel
-          </Button>
-          <Button variant="success" type="submit" className="ml-3">
-            Save
-          </Button>
-        </div>
-      </Form>
+            {/* Action Buttons */}
+            <div className="mt-4 text-right">
+              <Button variant="secondary" onClick={() => setShowCancelModal(true)}>
+                Cancel
+              </Button>
+              <Button variant="primary" className="mx-2 bg-success" type="submit">
+                Save Story
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
 
-      {/* Cancel modal */}
+      {/* Cancel Confirmation Modal */}
       <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
         <Modal.Header closeButton>
-          <Modal.Title>Cancel Adding Story</Modal.Title>
+          <Modal.Title>Confirm Cancel</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to cancel adding the story without saving the data?</Modal.Body>
+        <Modal.Body>Are you sure you want to cancel? Unsaved changes will be lost.</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowCancelModal(false)}>
-            No
+            Close
           </Button>
           <Button variant="danger" onClick={() => navigate('/')}>
             Yes, Cancel

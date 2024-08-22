@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, ListGroup, ListGroupItem, Container, Row, Col, Badge } from 'react-bootstrap';
+import { Card, ListGroup, ListGroupItem, Container, Row, Col, Badge, Spinner } from 'react-bootstrap';
 import axios from 'axios';
 
 const StoryDetail = () => {
-  const { id } = useParams(); // Untuk mendapatkan parameter id dari URL
+  const { id } = useParams();
   const [story, setStory] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -24,21 +24,31 @@ const StoryDetail = () => {
   }, [id]);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+        <Spinner animation="border" role="status">
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </Container>
+    );
   }
 
   if (!story) {
-    return <p>No story found.</p>;
+    return (
+      <Container className="d-flex justify-content-center align-items-center" style={{ height: '80vh' }}>
+        <p>No story found.</p>
+      </Container>
+    );
   }
 
   return (
     <Container>
       <Row>
         <Col md={4}>
-          <Card>
+          <Card className="shadow-sm">
             <Card.Img variant="top" src={story.cover_image} alt={story.title} />
             <Card.Body>
-              <Card.Title>{story.title}</Card.Title>
+              <Card.Title className="text-primary">{story.title}</Card.Title>
               <Card.Text>
                 <strong>Author:</strong> {story.author}
               </Card.Text>
@@ -46,7 +56,17 @@ const StoryDetail = () => {
                 <strong>Category:</strong> {story.category}
               </Card.Text>
               <Card.Text>
-                <strong>Status:</strong> <Badge variant={story.status === 'Publish' ? 'success' : 'warning'}>{story.status}</Badge>
+                <strong>Status:</strong>{' '}
+                <Badge
+                  style={{
+                    backgroundColor: story.status === 'Publish' ? '#28a745' : '#ffc107',
+                    color: '#fff',
+                    padding: '5px 10px',
+                    fontSize: '0.9em',
+                  }}
+                >
+                  {story.status}
+                </Badge>
               </Card.Text>
               <Card.Text>
                 <strong>Synopsis:</strong> {story.synopsis}
@@ -56,7 +76,16 @@ const StoryDetail = () => {
               <ListGroupItem>
                 <strong>Tags:</strong>{' '}
                 {story.tags.map((tag) => (
-                  <Badge key={tag.id} variant="primary" className="mr-1">
+                  <Badge
+                    key={tag.id}
+                    style={{
+                      backgroundColor: '#17a2b8',
+                      color: '#fff',
+                      marginRight: '5px',
+                      padding: '5px 10px',
+                      fontSize: '0.85em',
+                    }}
+                  >
                     {tag.tag_name}
                   </Badge>
                 ))}
@@ -65,12 +94,12 @@ const StoryDetail = () => {
           </Card>
         </Col>
         <Col md={8}>
-          <h3>Chapters</h3>
+          <h3 className="mb-4 text-primary">Chapters</h3>
           {story.chapters.length > 0 ? (
             <ListGroup>
               {story.chapters.map((chapter) => (
-                <ListGroupItem key={chapter.id}>
-                  <h5>{chapter.title}</h5>
+                <ListGroupItem key={chapter.id} className="mb-3">
+                  <h5 className="text-dark">{chapter.title}</h5>
                   <p>{chapter.content}</p>
                 </ListGroupItem>
               ))}
