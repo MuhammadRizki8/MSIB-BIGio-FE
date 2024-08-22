@@ -61,7 +61,7 @@ const StoryList = () => {
     <div className="container mt-5">
       <h1 className="text-center mb-4">Story List</h1>
 
-      {/* Search Bar */}
+      {/* Tabel */}
       <div className="mb-4 d-flex justify-content-between">
         <input type="text" className="form-control w-50" placeholder="Search stories..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
         <button className="btn btn-primary ml-2" onClick={handleSearch}>
@@ -70,6 +70,11 @@ const StoryList = () => {
         <button className="btn btn-secondary ml-2" onClick={() => setShowFilterModal(true)}>
           Filter
         </button>
+        <Link to="/add-story" className="btn btn-success ml-2">
+          {' '}
+          {/* Link to Add Story */}
+          Add Story
+        </Link>
       </div>
 
       {/* Tabel */}
@@ -100,8 +105,12 @@ const StoryList = () => {
               </td>
               <td>
                 {/* Tombol untuk melihat detail story */}
-                <Link to={`/stories/${story.id}`} className="btn btn-info">
+                <Link to={`/stories/${story.id}`} className="btn btn-info mr-2">
                   View Details
+                </Link>
+                {/* Tombol untuk mengedit story */}
+                <Link to={`/stories/edit/${story.id}`} className="btn btn-warning">
+                  Edit
                 </Link>
               </td>
             </tr>
