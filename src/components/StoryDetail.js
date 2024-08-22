@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Card, ListGroup, ListGroupItem, Container, Row, Col, Badge, Spinner } from 'react-bootstrap';
+import { useParams, useNavigate } from 'react-router-dom'; // Import useNavigate
+import { Card, ListGroup, ListGroupItem, Container, Row, Col, Badge, Spinner, Button } from 'react-bootstrap';
 import axios from 'axios';
 
 const StoryDetail = () => {
   const { id } = useParams();
   const [story, setStory] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     const fetchStoryDetail = async () => {
@@ -42,7 +43,7 @@ const StoryDetail = () => {
   }
 
   return (
-    <Container>
+    <Container className="mt-4">
       <Row>
         <Col md={4}>
           <Card className="shadow-sm">
@@ -100,7 +101,7 @@ const StoryDetail = () => {
               {story.chapters.map((chapter) => (
                 <ListGroupItem key={chapter.id} className="mb-3">
                   <h5 className="text-dark">{chapter.title}</h5>
-                  <p>{chapter.content}</p>
+                  <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
                 </ListGroupItem>
               ))}
             </ListGroup>
@@ -109,6 +110,10 @@ const StoryDetail = () => {
           )}
         </Col>
       </Row>
+
+      <Button variant="secondary" onClick={() => navigate(-1)} className="mt-4 mb-4">
+        Back to homepage
+      </Button>
     </Container>
   );
 };
